@@ -1,0 +1,29 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix tao: <http://pubannotation.org/ontology/tao.owl#> .
+<% @ns.each_key do |p| -%>
+<% if p == '_base' -%>
+@base <<%= @ns[p] %>> .
+<% else -%>
+@prefix <%= p %>: <<%= @ns[p] %>> .
+<% end -%>
+<% end -%>
+<% span_uris = [] -%>
+<% if @denotations -%>
+<% @denotations.each do |d| -%>
+<% span_uri = "<#{@text_uri}/spans/#{d[:span][:begin]}-#{d[:span][:end]}>" -%>
+<% span_uris << {:span => span_uri, :text => @text_uri, :begin => d[:span][:begin], :end => d[:span][:end]} -%>
+<% d[:obj] = 'SYM' if d[:obj].match(/\W/) -%>
+<%= "<#{@text_id}-#{d[:id]}>" %> rdf:type tao:Context_entity ;
+	tao:denoted_by <%= span_uri %> ;
+	rdf:type <%= d[:obj] %> .
+<% end -%>
+<% end -%>
+<% span_uris.uniq! -%>
+<% span_uris.each do |u| -%>
+<%= u[:span] %> rdf:type tao:Text_span ;
+	tao:has_value "<%= @text[u[:begin] ... u[:end]] %>" ;
+	tao:part_of <%= "<#{u[:text]}>" %> ;
+	tao:begins_at <%= u[:begin] %> ;
+	tao:ends_at <%= u[:end] %> .
+<% end -%>
