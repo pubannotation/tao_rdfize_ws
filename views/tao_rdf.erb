@@ -1,29 +1,43 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix tao: <http://pubannotation.org/ontology/tao.owl#> .
-<% @ns.each_key do |p| -%>
+<% @namespaces.each_key do |p| -%>
 <% if p == '_base' -%>
-@base <<%= @ns[p] %>> .
+@base <%= "<#{@namespaces[p]}>" %> .
 <% else -%>
-@prefix <%= p %>: <<%= @ns[p] %>> .
+@prefix <%= p %>: <%= "<#{@namespaces[p]}>" %> .
 <% end -%>
 <% end -%>
-<% span_uris = [] -%>
-<% if @denotations -%>
 <% @denotations.each do |d| -%>
-<% span_uri = "<#{@text_uri}/spans/#{d[:span][:begin]}-#{d[:span][:end]}>" -%>
-<% span_uris << {:span => span_uri, :text => @text_uri, :begin => d[:span][:begin], :end => d[:span][:end]} -%>
-<% d[:obj] = 'SYM' if d[:obj].match(/\W/) -%>
-<%= "<#{@text_id}-#{d[:id]}>" %> rdf:type tao:Context_entity ;
-	tao:denoted_by <%= span_uri %> ;
-	rdf:type <%= d[:obj] %> .
+<%= d[:uri] %> rdf:type tao:Context_entity ;
+	rdf:type <%= d[:obj] %> ;
+<% unless d[:governer].nil? -%>
+	tao:governed_by <%= d[:governer][:uri] %> ;
 <% end -%>
+<% d[:governees].each do |c| -%>
+	tao:governs <%= c[:uri] %> ;
 <% end -%>
-<% span_uris.uniq! -%>
-<% span_uris.each do |u| -%>
-<%= u[:span] %> rdf:type tao:Text_span ;
-	tao:has_value "<%= @text[u[:begin] ... u[:end]] %>" ;
-	tao:part_of <%= "<#{u[:text]}>" %> ;
-	tao:begins_at <%= u[:begin] %> ;
-	tao:ends_at <%= u[:end] %> .
+<% d[:precedings].each do |p| -%>
+	tao:follows <%= p[:uri] %> ;
+<% end -%>
+<% d[:followings].each do |f| -%>
+	tao:followed_by <%= f[:uri] %> ;
+<% end -%>
+	tao:denoted_by <%= d[:span_uri] %> .
+<% end -%>
+<% @spans.each do |s| -%>
+<%= s[:uri] %> rdf:type tao:Text_span ;
+	tao:part_of <%= "<#{s[:text]}>" %> ;
+	tao:begins_at <%= s[:begin] %> ;
+	tao:ends_at <%= s[:end] %> ;
+<% unless s[:governer].nil? -%>
+	tao:governed_by <%= s[:governer][:uri] %> ;
+<% end -%>
+<% s[:precedings].each do |p| -%>
+	tao:follows <%= p[:uri] %> ;
+<% end -%>
+<% s[:followings].each do |f| -%>
+	tao:followed_by <%= f[:uri] %> ;
+<% end -%>
+	tao:has_value "<%= @text[s[:begin] ... s[:end]] %>" .
 <% end -%>
