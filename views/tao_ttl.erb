@@ -1,0 +1,41 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix tao: <http://pubannotation.org/ontology/tao.owl#> .
+<%# namespaces -%>
+<% namespaces.each_key do |p| -%>
+<% if p == '_base' -%>
+@base <%= "<#{namespaces[p]}>" %> .
+<% else -%>
+@prefix <%= p %>: <%= "<#{namespaces[p]}>" %> .
+<% end -%>
+<% end -%>
+<%# denotations -%>
+<% denotations.each do |d| -%>
+<%= d[:obj_uri] %> rdf:type tao:Context_entity ;
+	rdf:type <%= d[:cls_uri] %> ;
+	tao:denoted_by <%= d[:span_uri] %> .
+<% end -%>
+<%# spans -%>
+<% spans.each do |s| -%>
+<%= s[:span_uri] %> rdf:type tao:Text_span ;
+	tao:belongs_to <%= "<#{s[:source_uri]}>" %> ;
+	tao:begins_at <%= s[:begin] %> ;
+	tao:ends_at <%= s[:end] %> ;
+<% s[:precedings].each do |s| -%>
+	tao:follows <%= s[:span_uri] %> ;
+<% end -%>
+<% s[:followings].each do |s| -%>
+	tao:followed_by <%= s[:span_uri] %> ;
+<% end -%>
+<% s[:children].each do |s| -%>
+	tao:contains <%= s[:span_uri] %> ;
+<% end -%>
+<% if s.has_key?(:parent) -%>
+	tao:contained_in <%= s[:parent][:span_uri] %> ;
+<% end -%>
+	tao:has_text "<%= text[s[:begin] ... s[:end]] %>" .
+<% end -%>
+<%# relations -%>
+<% relations.each do |r| -%>
+<%= r[:subj_uri] %> <%= r[:pred_uri] %> <%= r[:obj_uri] %> .
+<% end -%>

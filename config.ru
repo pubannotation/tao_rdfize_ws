@@ -1,6 +1,4 @@
-#$LOAD_PATH << File.dirname(__FILE__) + '/lib'
-#require 'tao_rdfize_ws'
+$LOAD_PATH << File.dirname(__FILE__) + '/lib'
+require File.expand_path '../tao_rdfizer_ws', __FILE__
 
-require File.expand_path '../tao_rdfize_ws', __FILE__
-
-run TAORDFizeWS
+run TAORDFizerWS

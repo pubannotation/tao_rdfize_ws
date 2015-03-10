@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+gem 'rdf'
 gem 'sinatra'
 gem 'json'
 gem 'thin'

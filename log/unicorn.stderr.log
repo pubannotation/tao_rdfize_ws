@@ -1,0 +1,37 @@
+F, [2014-11-13T10:04:16.735699 #24475] FATAL -- : error adding listener addr=./tmp/sockets/unicorn.sock
+/home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/socket_helper.rb:167:in `bind_listen': Don't know how to bind: ./tmp/sockets/unicorn.sock (ArgumentError)
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:242:in `listen'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:809:in `block in bind_new_listeners!'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:809:in `each'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:809:in `bind_new_listeners!'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:138:in `start'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/bin/unicorn:126:in `<top (required)>'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/unicorn:23:in `load'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/unicorn:23:in `<main>'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/ruby_executable_hooks:15:in `eval'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/ruby_executable_hooks:15:in `<main>'
+F, [2014-11-13T10:06:10.200430 #24688] FATAL -- : error adding listener addr=./tmp/sockets/unicorn.sock
+/home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/socket_helper.rb:167:in `bind_listen': Don't know how to bind: ./tmp/sockets/unicorn.sock (ArgumentError)
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:242:in `listen'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:809:in `block in bind_new_listeners!'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:809:in `each'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:809:in `bind_new_listeners!'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/lib/unicorn/http_server.rb:138:in `start'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/gems/unicorn-4.8.3/bin/unicorn:126:in `<top (required)>'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/unicorn:23:in `load'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/unicorn:23:in `<main>'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/ruby_executable_hooks:15:in `eval'
+	from /home/jdkim/.rvm/gems/ruby-2.1.2/bin/ruby_executable_hooks:15:in `<main>'
+I, [2014-11-13T10:35:17.399892 #26128]  INFO -- : listening on addr=/home/jdkim/Dropbox/dev/tao_rdfize_ws/tmp/sockets/unicorn.sock fd=10
+I, [2014-11-13T10:35:17.400228 #26128]  INFO -- : worker=0 spawning...
+I, [2014-11-13T10:35:17.408445 #26128]  INFO -- : master process ready
+I, [2014-11-13T10:35:17.420148 #26131]  INFO -- : worker=0 spawned pid=26131
+I, [2014-11-13T10:35:17.420406 #26131]  INFO -- : Refreshing Gem list
+I, [2014-11-13T10:35:17.496711 #26131]  INFO -- : worker=0 ready
+D, [2014-11-13T20:45:19.829189 #26128] DEBUG -- : waiting 16.0s after suspend/hibernation
+D, [2014-11-13T23:47:55.554923 #26128] DEBUG -- : waiting 16.0s after suspend/hibernation
+D, [2014-11-14T09:50:13.455306 #26128] DEBUG -- : waiting 16.0s after suspend/hibernation
+D, [2014-11-14T15:46:23.890509 #26128] DEBUG -- : waiting 16.0s after suspend/hibernation
+D, [2014-11-15T16:27:53.611870 #26128] DEBUG -- : waiting 16.0s after suspend/hibernation
+I, [2014-11-15T16:31:08.364900 #26128]  INFO -- : reaped #<Process::Status: pid 26131 exit 0> worker=0
+I, [2014-11-15T16:31:08.392801 #26128]  INFO -- : master complete
