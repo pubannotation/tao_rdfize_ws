@@ -139,6 +139,8 @@ class << TAO
 		delimiter_position = label.index(':')
 		if !delimiter_position.nil? && namespaces.keys.include?(label[0...delimiter_position])
 			label
+		elsif label =~ %r[^https?://]
+			"<#{label}>"
 		else
 			label = 'SYM' if label.match(/^\W+$/)
 			namespaces.has_key?('_base') ? "<##{label}>" : "prj:#{label}"
