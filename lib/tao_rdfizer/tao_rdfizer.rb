@@ -32,8 +32,8 @@ class << TAO
 		# get necessary URIs
 		project_uri = 'http://pubannotation.org/projects/' + annotations[:project] unless mode ==:spans
 		text_uri    = annotations[:target]
-		source_db, source_id, div_id = get_target_info(text_uri)
-		text_id = div_id.nil? ? "#{source_db}-#{source_id}" : "#{source_db}-#{source_id}-#{div_id}"
+		sourcedb, sourceid, divid = get_target_info(text_uri)
+		text_id = divid.nil? ? "#{sourcedb}-#{sourceid}" : "#{sourcedb}-#{sourceid}-#{divid}"
 
 		# namespaces
 		namespaces = {}
@@ -53,58 +53,10 @@ class << TAO
 
 		# denotations preprocessing
 		denotations.each do |d|
-			d[:obj_uri] = "prj:#{text_id}-#{d[:id]}"
-			d[:cls_uri] = find_uri(d[:obj], namespaces)
-		end
-
-		# collect spans
-		spanh = {}
-		denotations.each do |d|
 			span_uri = "<#{text_uri}/spans/#{d[:span][:begin]}-#{d[:span][:end]}>"
 			d[:span_uri] = span_uri
-
-			if spanh[span_uri].nil?
-				spanh[span_uri] = {:span_uri => span_uri, :source_uri => text_uri, :begin => d[:span][:begin], :end => d[:span][:end], :denotations => [d]}
-			else
-				spanh[span_uri][:denotations] << d
-			end
-		end
-		spans = spanh.values
-		spans.sort!{|a, b| (a[:begin] <=> b[:begin]).nonzero? || b[:end] <=> a[:end]}
-
-		## begin indexing
-		len = text.length
-		num = spans.length
-
-		# initilaize the index
-		(0 ... num).each do |i|
-			spans[i][:followings] = []
-			spans[i][:precedings] = []
-			spans[i][:children] = []
-		end
-
-		(0 ... num).each do |i|
-			# index the embedded spans
-			j = i + 1
-			while j < num && spans[j][:begin] < spans[i][:end]
-				unless include_parent?(spans[i][:children], spans[j])
-					spans[i][:children] << spans[j]
-					spans[j][:parent] = spans[i]
-				end
-				j += 1
-			end
-
-			# find the following position
-			fp = spans[i][:end]
-			fp += 1 while fp < len && text[fp].match(/\s/)
-			next if fp == len
-
-			# index the following spans
-			while j < num && spans[j][:begin] == fp
-				spans[i][:followings] << spans[j]
-				spans[j][:precedings] << spans[i]
-				j += 1
-			end 
+			d[:obj_uri] = "prj:#{text_id}-#{d[:id]}"
+			d[:cls_uri] = find_uri(d[:obj], namespaces)
 		end
 
 		# relations
@@ -118,6 +70,77 @@ class << TAO
 			r[:pred_uri] = find_uri(r[:pred], namespaces)
 		end
 
+		unless mode == :annotations
+			text_uri    = annotations[:target]
+			sourcedb, sourceid, divid = get_target_info(text_uri)
+
+
+			# collect spans
+			spans = denotations.map{|d| d[:span]}
+			position = 0
+			annotations[:text].scan(/[^\W]*\W/).each do |tok|
+				spans << {:begin => position, :end => position + tok.index(/\W/)}
+				position += tok.length
+			end
+			spans.uniq!
+
+			# add_infomation
+			spans.each do |s|
+				s[:span_uri] = "<#{text_uri}/spans/#{s[:begin]}-#{s[:end]}>"
+				s[:source_uri] = text_uri
+			end
+
+			# index
+			spanh = spans.inject({}){|r, s| r[s[:span_uri]] = s; r}
+
+			# add denotation inofrmation
+			denotations.each do |d|
+				span_uri = d[:span_uri]
+				if spanh[span_uri][:denotations].nil?
+					spanh[span_uri][:denotations] = [d]
+				else
+					spanh[span_uri][:denotations] << d
+				end
+			end
+
+			spans.sort!{|a, b| (a[:begin] <=> b[:begin]).nonzero? || b[:end] <=> a[:end]}
+
+			## begin indexing
+			len = text.length
+			num = spans.length
+
+			# initilaize the index
+			(0 ... num).each do |i|
+				spans[i][:followings] = []
+				spans[i][:precedings] = []
+				spans[i][:children] = []
+			end
+
+			(0 ... num).each do |i|
+				# index the embedded spans
+				j = i + 1
+				while j < num && spans[j][:begin] < spans[i][:end]
+					unless include_parent?(spans[i][:children], spans[j])
+						spans[i][:children] << spans[j]
+						spans[j][:parent] = spans[i]
+					end
+					j += 1
+				end
+
+				# find the following position
+				fp = spans[i][:end]
+				fp += 1 while fp < len && text[fp].match(/\s/)
+				next if fp == len
+
+				# index the following spans
+				while j < num && spans[j][:begin] == fp
+					spans[i][:followings] << spans[j]
+					spans[j][:precedings] << spans[i]
+					j += 1
+				end 
+			end
+		end
+
 		ttl = tao_ttl_erb.result binding
 	end
 
@@ -128,11 +151,11 @@ class << TAO
 	end
 
 	def get_target_info (text_uri)
-		source_db = (text_uri =~ %r|/sourcedb/([^/]+)|)? $1 : nil
-		source_id = (text_uri =~ %r|/sourceid/([^/]+)|)? $1 : nil
-		div_id    = (text_uri =~ %r|/divs/([^/]+)|)? $1 : nil
+		sourcedb = (text_uri =~ %r|/sourcedb/([^/]+)|)? $1 : nil
+		sourceid = (text_uri =~ %r|/sourceid/([^/]+)|)? $1 : nil
+		divid    = (text_uri =~ %r|/divs/([^/]+)|)? $1 : nil
 
-		return source_db, source_id, div_id
+		return sourcedb, sourceid, divid
 	end
 
 	def find_uri (label, namespaces)
