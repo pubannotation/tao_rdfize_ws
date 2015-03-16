@@ -26,7 +26,7 @@ class TAORDFizerWS < Sinatra::Base
 			ttl = TAO::tao_rdfizer(@annotations, mode)
 
 			headers \
-				'Content-Type' => 'application/x-turtle'
+				'Content-Type' => 'application/x-turtle; charset=utf-8'
 			ttl
 		rescue ArgumentError, IOError => e
 			status 406
