@@ -165,8 +165,12 @@ class << TAO
 		elsif label =~ %r[^https?://]
 			"<#{label}>"
 		else
-			label = 'SYM' if label.match(/^\W+$/)
-			namespaces.has_key?('_base') ? "<##{label}>" : "prj:#{label}"
+			clabel = if label.match(/^\W+$/)
+				'SYM'
+			else
+				label.sub(/^\W+/, '').sub(/\W+$/, '')
+			end
+			namespaces.has_key?('_base') ? "<#{clabel}>" : "prj:#{clabel}"
 		end
 	end
 end

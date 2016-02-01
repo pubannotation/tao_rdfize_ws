@@ -10,8 +10,8 @@ describe TAO do
 					text:"example text",
 					denotations:[
 						{id:"T1", span:{begin:0,end:7},obj:"obj1"},
-						{id:"T2", span:{begin:8,end:12},obj:"obj2"},
-						{id:"T3", span:{begin:0,end:12},obj:"obj3"}
+						{id:"T2", span:{begin:8,end:12},obj:"!!"},
+						{id:"T3", span:{begin:0,end:12},obj:"-COMMA-"}
 					],
 					relations:[
 						{id:"R1", subj:"T1", pred:"associatedWith", obj:"T2"}
@@ -28,8 +28,8 @@ describe TAO do
 					text:"example text",
 					denotations:[
 						{id:"T1", span:{begin:0,end:7},obj:"obj1"},
-						{id:"T2", span:{begin:8,end:12},obj:"obj2"},
-						{id:"T3", span:{begin:0,end:12},obj:"obj3"}
+						{id:"T2", span:{begin:8,end:12},obj:"!!"},
+						{id:"T3", span:{begin:0,end:12},obj:"-COMMA-"}
 					],
 					relations:[
 						{id:"R1", subj:"T1", pred:"associatedWith", obj:"T2"}
